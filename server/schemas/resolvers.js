@@ -1,6 +1,6 @@
 const { AuthenticationError } = require('apollo-server-express');
-const { User, Book } = require('./models');
-const { signToken } = require('./utils/auth');
+const { User, Book } = require('../models');
+const { signToken } = require('../utils/auth');
 
 const resolvers = {
     Query: {
@@ -45,7 +45,6 @@ const resolvers = {
         }
         throw new AuthenticationError('You are not logged in!');
       },
-    },
 
     removeBook: async (parent, { bookId }, context) => {
       if (context.user) {
@@ -53,11 +52,12 @@ const resolvers = {
           {_id: context.user._id},
           { $pull: { savedBooks: { bookId: bookId } } },
           { new: true }
-        ).populate('savedBooks');
+        )
         return updatedUser;
       }
       throw new AuthenticationError('You are not logged in!');
     },
-  };
+  },
+}
 
 module.exports = resolvers;
